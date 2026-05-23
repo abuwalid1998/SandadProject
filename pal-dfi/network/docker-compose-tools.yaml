@@ -1,0 +1,16 @@
+services:
+  fabric-tools:
+    image: hyperledger/fabric-tools:2.5
+    container_name: fabric-tools
+    tty: true
+    stdin_open: true
+    working_dir: /workspace
+    volumes:
+      - ../:/workspace
+    networks:
+      - fabric_net
+
+networks:
+  fabric_net:
+    external: true
+    name: paldfi_fabric_net

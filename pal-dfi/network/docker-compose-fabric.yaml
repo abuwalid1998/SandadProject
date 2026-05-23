@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+
+  orderer.ps:
+    image: hyperledger/fabric-orderer:2.5
+    container_name: orderer.ps
+
+    environment:
+      FABRIC_LOGGING_SPEC: INFO
+
+      ORDERER_GENERAL_LISTENADDRESS: 0.0.0.0
+      ORDERER_GENERAL_LISTENPORT: 7050
+
+      ORDERER_GENERAL_LOCALMSPID: OrdererMSP
+      ORDERER_GENERAL_LOCALMSPDIR: /var/hyperledger/orderer/msp
+
+      ORDERER_GENERAL_BOOTSTRAPMETHOD: file
+      ORDERER_GENERAL_BOOTSTRAPFILE: /etc/hyperledger/fabric/genesisblock
+
+      ORDERER_GENERAL_TLS_ENABLED: "true"
+      ORDERER_GENERAL_TLS_PRIVATEKEY: /var/hyperledger/orderer/tls/keystore/priv_sk
+      ORDERER_GENERAL_TLS_CERTIFICATE: /var/hyperledger/orderer/tls/signcerts/cert.pem
+      ORDERER_GENERAL_TLS_ROOTCAS: '[/var/hyperledger/orderer/tls/tlscacerts/tls-ca-orderer-ps-7054-ca-orderer.pem]'
+
+      ORDERER_CHANNELPARTICIPATION_ENABLED: "false"
+      ORDERER_ADMIN_LISTENADDRESS: ""
+
+    command: orderer
+
+    volumes:
+      - ./organizations/ordererOrganizations/orderer.ps/orderers/orderer.ps/msp:/var/hyperledger/orderer/msp
+      - ./organizations/ordererOrganizations/orderer.ps/orderers/orderer.ps/tls:/var/hyperledger/orderer/tls
+      - ./system-genesis-block/genesis.block:/etc/hyperledger/fabric/genesisblock
+
+    ports:
+      - "7050:7050"
+
+    networks:
+      - fabric_net
+
+
+  peer0.pma.ps:
+    image: hyperledger/fabric-peer:2.5
+    container_name: peer0.pma.ps
+
+    environment:
+      FABRIC_CFG_PATH: /etc/hyperledger/fabric
+      FABRIC_LOGGING_SPEC: INFO
+      CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
+
+      CORE_PEER_TLS_ENABLED: "true"
+      CORE_PEER_TLS_CERT_FILE: /etc/hyperledger/fabric/tls/signcerts/cert.pem
+      CORE_PEER_TLS_KEY_FILE: /etc/hyperledger/fabric/tls/keystore/priv_sk
+      CORE_PEER_TLS_ROOTCERT_FILE: /etc/hyperledger/fabric/tls/tlscacerts/tls-ca-pma-ps-9054-ca-pma.pem
+      CORE_PEER_TLS_CLIENTROOTCAS_FILES: /etc/hyperledger/fabric/tls/tlscacerts/tls-ca-pma-ps-9054-ca-pma.pem
+
+      CORE_PEER_ID: peer0.pma.ps
+      CORE_PEER_ADDRESS: peer0.pma.ps:7051
+      CORE_PEER_LISTENADDRESS: 0.0.0.0:7051
+
+      CORE_PEER_LOCALMSPID: PMAMSP
+      CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/fabric/users/Admin@pma.ps/msp
+
+      CORE_PEER_DELIVERYCLIENT_ADDRESSOVERRIDE: orderer.ps
+      CORE_PEER_DELIVERYCLIENT_TLSROOTCERTFILE: /etc/hyperledger/fabric/orderer-tls/tls-ca-orderer-ps-7054-ca-orderer.pem
+
+    command: peer node start
+
+    volumes:
+      - ./organizations/peerOrganizations/pma.ps/peers/peer0.pma.ps/msp:/etc/hyperledger/fabric/msp
+      - ./organizations/peerOrganizations/pma.ps/peers/peer0.pma.ps/tls:/etc/hyperledger/fabric/tls
+      - ./organizations/peerOrganizations/pma.ps/users/Admin@pma.ps/msp:/etc/hyperledger/fabric/users/Admin@pma.ps/msp
+      - ./organizations/ordererOrganizations/orderer.ps/orderers/orderer.ps/tls/tlscacerts:/etc/hyperledger/fabric/orderer-tls
+      - /var/run/docker.sock:/host/var/run/docker.sock
+
+    ports:
+      - "7051:7051"
+
+    networks:
+      - fabric_net
+
+
+  peer0.moi.ps:
+    image: hyperledger/fabric-peer:2.5
+    container_name: peer0.moi.ps
+
+    environment:
+      FABRIC_CFG_PATH: /etc/hyperledger/fabric
+      FABRIC_LOGGING_SPEC: INFO
+      CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
+
+      CORE_PEER_TLS_ENABLED: "true"
+      CORE_PEER_TLS_CERT_FILE: /etc/hyperledger/fabric/tls/signcerts/cert.pem
+      CORE_PEER_TLS_KEY_FILE: /etc/hyperledger/fabric/tls/keystore/priv_sk
+      CORE_PEER_TLS_ROOTCERT_FILE: /etc/hyperledger/fabric/tls/tlscacerts/tls-ca-moi-ps-8054-ca-moi.pem
+      CORE_PEER_TLS_CLIENTROOTCAS_FILES: /etc/hyperledger/fabric/tls/tlscacerts/tls-ca-moi-ps-8054-ca-moi.pem
+
+      CORE_PEER_ID: peer0.moi.ps
+      CORE_PEER_ADDRESS: peer0.moi.ps:7051
+      CORE_PEER_LISTENADDRESS: 0.0.0.0:7051
+
+      CORE_PEER_LOCALMSPID: MOIMSP
+      CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/fabric/users/Admin@moi.ps/msp
+
+      CORE_PEER_DELIVERYCLIENT_ADDRESSOVERRIDE: orderer.ps
+      CORE_PEER_DELIVERYCLIENT_TLSROOTCERTFILE: /etc/hyperledger/fabric/orderer-tls/tls-ca-orderer-ps-7054-ca-orderer.pem
+
+    command: peer node start
+
+    volumes:
+      - ./organizations/peerOrganizations/moi.ps/peers/peer0.moi.ps/msp:/etc/hyperledger/fabric/msp
+      - ./organizations/peerOrganizations/moi.ps/peers/peer0.moi.ps/tls:/etc/hyperledger/fabric/tls
+      - ./organizations/peerOrganizations/moi.ps/users/Admin@moi.ps/msp:/etc/hyperledger/fabric/users/Admin@moi.ps/msp
+      - ./organizations/ordererOrganizations/orderer.ps/orderers/orderer.ps/tls/tlscacerts:/etc/hyperledger/fabric/orderer-tls
+      - /var/run/docker.sock:/host/var/run/docker.sock
+
+    ports:
+      - "8051:7051"
+
+    networks:
+      - fabric_net
+
+
+  peer0.jawwal.ps:
+    image: hyperledger/fabric-peer:2.5
+    container_name: peer0.jawwal.ps
+
+    environment:
+      FABRIC_CFG_PATH: /etc/hyperledger/fabric
+      FABRIC_LOGGING_SPEC: INFO
+      CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
+
+      CORE_PEER_TLS_ENABLED: "true"
+      CORE_PEER_TLS_CERT_FILE: /etc/hyperledger/fabric/tls/signcerts/cert.pem
+      CORE_PEER_TLS_KEY_FILE: /etc/hyperledger/fabric/tls/keystore/priv_sk
+      CORE_PEER_TLS_ROOTCERT_FILE: /etc/hyperledger/fabric/tls/tlscacerts/tls-ca-jawwal-ps-10054-ca-jawwal.pem
+      CORE_PEER_TLS_CLIENTROOTCAS_FILES: /etc/hyperledger/fabric/tls/tlscacerts/tls-ca-jawwal-ps-10054-ca-jawwal.pem
+
+      CORE_PEER_ID: peer0.jawwal.ps
+      CORE_PEER_ADDRESS: peer0.jawwal.ps:7051
+      CORE_PEER_LISTENADDRESS: 0.0.0.0:7051
+
+      CORE_PEER_LOCALMSPID: JAWWALMSP
+      CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/fabric/users/Admin@jawwal.ps/msp
+
+      CORE_PEER_DELIVERYCLIENT_ADDRESSOVERRIDE: orderer.ps
+      CORE_PEER_DELIVERYCLIENT_TLSROOTCERTFILE: /etc/hyperledger/fabric/orderer-tls/tls-ca-orderer-ps-7054-ca-orderer.pem
+
+    command: peer node start
+
+    volumes:
+      - ./organizations/peerOrganizations/jawwal.ps/peers/peer0.jawwal.ps/msp:/etc/hyperledger/fabric/msp
+      - ./organizations/peerOrganizations/jawwal.ps/peers/peer0.jawwal.ps/tls:/etc/hyperledger/fabric/tls
+      - ./organizations/peerOrganizations/jawwal.ps/users/Admin@jawwal.ps/msp:/etc/hyperledger/fabric/users/Admin@jawwal.ps/msp
+      - ./organizations/ordererOrganizations/orderer.ps/orderers/orderer.ps/tls/tlscacerts:/etc/hyperledger/fabric/orderer-tls
+      - /var/run/docker.sock:/host/var/run/docker.sock
+
+    ports:
+      - "9051:7051"
+
+    networks:
+      - fabric_net
+
+
+networks:
+  fabric_net:
+    external: true
+    name: paldfi_fabric_net

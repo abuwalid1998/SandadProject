@@ -1,0 +1,70 @@
+services:
+
+  ca.orderer.ps:
+    image: hyperledger/fabric-ca:1.5
+    container_name: ca.orderer.ps
+    environment:
+      FABRIC_CA_HOME: /etc/hyperledger/fabric-ca-server
+      FABRIC_CA_SERVER_CA_NAME: ca-orderer
+      FABRIC_CA_SERVER_TLS_ENABLED: "true"
+      FABRIC_CA_SERVER_CSR_HOSTS: ca.orderer.ps,localhost
+    ports:
+      - "7054:7054"
+    command: sh -c "fabric-ca-server start -b admin:adminpw -d"
+    volumes:
+      - ./fabric-ca/orderer:/etc/hyperledger/fabric-ca-server
+    networks:
+      - fabric_net
+
+  ca.pma.ps:
+    image: hyperledger/fabric-ca:1.5
+    container_name: ca.pma.ps
+    environment:
+      FABRIC_CA_HOME: /etc/hyperledger/fabric-ca-server
+      FABRIC_CA_SERVER_CA_NAME: ca-pma
+      FABRIC_CA_SERVER_TLS_ENABLED: "true"
+      FABRIC_CA_SERVER_CSR_HOSTS: ca.pma.ps,localhost
+    ports:
+      - "9054:9054"
+    command: sh -c "fabric-ca-server start -p 9054 -b admin:adminpw -d"
+    volumes:
+      - ./fabric-ca/pma:/etc/hyperledger/fabric-ca-server
+    networks:
+      - fabric_net
+
+  ca.moi.ps:
+    image: hyperledger/fabric-ca:1.5
+    container_name: ca.moi.ps
+    environment:
+      FABRIC_CA_HOME: /etc/hyperledger/fabric-ca-server
+      FABRIC_CA_SERVER_CA_NAME: ca-moi
+      FABRIC_CA_SERVER_TLS_ENABLED: "true"
+      FABRIC_CA_SERVER_CSR_HOSTS: ca.moi.ps,localhost
+    ports:
+      - "8054:8054"
+    command: sh -c "fabric-ca-server start -p 8054 -b admin:adminpw -d"
+    volumes:
+      - ./fabric-ca/moi:/etc/hyperledger/fabric-ca-server
+    networks:
+      - fabric_net
+
+  ca.jawwal.ps:
+    image: hyperledger/fabric-ca:1.5
+    container_name: ca.jawwal.ps
+    environment:
+      FABRIC_CA_HOME: /etc/hyperledger/fabric-ca-server
+      FABRIC_CA_SERVER_CA_NAME: ca-jawwal
+      FABRIC_CA_SERVER_TLS_ENABLED: "true"
+      FABRIC_CA_SERVER_CSR_HOSTS: ca.jawwal.ps,localhost
+    ports:
+      - "10054:10054"
+    command: sh -c "fabric-ca-server start -p 10054 -b admin:adminpw -d"
+    volumes:
+      - ./fabric-ca/jawwal:/etc/hyperledger/fabric-ca-server
+    networks:
+      - fabric_net
+
+networks:
+  fabric_net:
+    external: true
+    name: paldfi_fabric_net

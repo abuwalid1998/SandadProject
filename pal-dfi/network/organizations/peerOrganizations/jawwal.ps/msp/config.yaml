@@ -1,0 +1,14 @@
+NodeOUs:
+  Enable: true
+  ClientOUIdentifier:
+    Certificate: cacerts/ca-jawwal-ps-10054-ca-jawwal.pem
+    OrganizationalUnitIdentifier: client
+  PeerOUIdentifier:
+    Certificate: cacerts/ca-jawwal-ps-10054-ca-jawwal.pem
+    OrganizationalUnitIdentifier: peer
+  AdminOUIdentifier:
+    Certificate: cacerts/ca-jawwal-ps-10054-ca-jawwal.pem
+    OrganizationalUnitIdentifier: admin
+  OrdererOUIdentifier:
+    Certificate: cacerts/ca-jawwal-ps-10054-ca-jawwal.pem
+    OrganizationalUnitIdentifier: orderer
