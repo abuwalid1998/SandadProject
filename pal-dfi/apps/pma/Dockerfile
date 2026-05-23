@@ -1,9 +1,7 @@
-FROM alpine:3.20
+FROM python:3.12-alpine
 
 WORKDIR /app
-
-RUN apk add --no-cache busybox-extras
+COPY server.py /app/server.py
 
 EXPOSE 8080
-
-CMD sh -c "while true; do echo -e 'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"service\":\"pma\",\"status\":\"ok\"}' | nc -l -p 8080; done"
+CMD ["python", "/app/server.py"]

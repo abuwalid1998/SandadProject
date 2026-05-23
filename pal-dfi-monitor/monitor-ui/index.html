@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAL-DFI Monitor</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>PAL-DFI Monitor Dashboard</h1>
+
+    <section>
+      <h2>Core Services</h2>
+      <div id="services" class="cards"></div>
+    </section>
+
+    <section>
+      <h2>Containers</h2>
+      <pre id="containers">Loading...</pre>
+    </section>
+
+    <section>
+      <h2>Transactions (cache)</h2>
+      <pre id="transactions">Loading...</pre>
+    </section>
+  </main>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
